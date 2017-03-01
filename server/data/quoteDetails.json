@@ -1,0 +1,62 @@
+[
+  {
+    "quoteID": 40264862,
+    "status": "Waiting"
+  },
+  {
+    "quoteID": 40924820,
+    "status": "Pending"
+  },
+  {
+    "quoteID": 40957349,
+    "status": "Success"
+  },
+  {
+    "quoteID": 40331409,
+    "status": "Failure"
+  },
+  {
+    "quoteID": 40774787,
+    "status": "Edited"
+  },
+  {
+    "quoteID": 40758201,
+    "status": "Edited"
+  },
+  {
+    "quoteID": 40385730,
+    "status": "Edited"
+  },
+  {
+    "quoteID": 40279874,
+    "status": "In Progress"
+  },
+  {
+    "quoteID": 40425516,
+    "status": "Waiting"
+  },
+  {
+    "quoteID": 40410650,
+    "status": "Failure"
+  },
+  {
+    "quoteID": 40183864,
+    "status": "In Progress"
+  },
+  {
+    "quoteID": 40351707,
+    "status": "In Progress"
+  },
+  {
+    "quoteID": 40159940,
+    "status": "Waiting"
+  },
+  {
+    "quoteID": 40255080,
+    "status": "Waiting"
+  },
+  {
+    "quoteID": 40651308,
+    "status": "Success"
+  }
+]

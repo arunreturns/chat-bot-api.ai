@@ -1,0 +1,176 @@
+<html>
+
+<head>
+	<title>Sales Chat</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="libs/angular/angular.min.js"></script>
+	
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
+	<script type="text/javascript">
+		var app = angular.module('chatbotApp', []);
+
+		app.controller('MainController', function($scope, $http){
+			$scope.recognition;
+			$scope.accessToken = "a9ffbf2c72a04617b3c56b8c9b6ef0b9";
+			$scope.baseUrl = "https://api.api.ai/v1/";
+			$scope.startRecognition = function() {
+				$scope.recognition = new webkitSpeechRecognition();
+				$scope.recognition.onstart = function(event) {
+					console.log("Starting");
+				};
+				$scope.recognition.onresult = function(event) {
+					var text = "";
+					for (var i = event.resultIndex; i < event.results.length; ++i) {
+						text += event.results[i][0].transcript;
+					}
+					$scope.stopRecognition();
+				};
+				$scope.recognition.onend = function() {
+					$scope.stopRecognition();
+				};
+				$scope.recognition.lang = "en-US";
+				$scope.recognition.start();
+			};
+			
+			$scope.stopRecognition = function () {
+				if ($scope.recognition) {
+					$scope.recognition.stop();
+					$scope.recognition = null;
+				}
+			};
+			
+			$scope.switchRecognition = function() {
+				if ($scope.recognition) {
+					$scope.stopRecognition();
+				}
+				else {
+					$scope.startRecognition();
+				}
+			};
+			
+			$scope.history = [];
+			$scope.chat = function(){
+				$scope.history.push($scope.userInput);
+				let requestData = JSON.stringify({
+					query: $scope.userInput,
+					lang: "en",
+					sessionId: "somerandomthing"
+				});
+				$scope.userInput = "";
+				$http.post(($scope.baseUrl + "query?v=20150910"), requestData, {
+					headers: {
+						'Content-Type': 'application/json; charset=utf-8',
+						"Authorization": "Bearer " + $scope.accessToken
+					}
+				})
+				.then(function(respData){
+					$scope.APIResponse = JSON.stringify(respData.data);
+					let resultData = respData.data.result;
+					$scope.history.push(resultData.fulfillment.displayText || resultData.fulfillment.speech);
+				})
+				.catch(function(err, status, header){
+					console.log(err);
+					console.log(status);
+				});
+			};
+		});
+	</script>
+	
+	<style type="text/css">
+		body {
+			font-family: 'Josefin Slab', serif;
+		}
+		.chatBox {
+			max-height: 50vh;
+		    overflow: auto;
+		    margin-bottom: 2%;
+		    padding: 1%;
+		}
+		.list-group {
+			box-shadow: none;
+		}
+		.list-group-item {
+			border: none;
+			color: white;
+		}
+		.listOdd {
+			background: #478294;
+			margin: 0% 0% 2% 40%;
+			padding: 2%;
+			border-radius: 15px;
+		}
+		.listEven {
+			background: #3a9652;
+			margin: 0% 40% 2% 0%;
+			padding: 2%;
+			border-radius: 15px;
+		}
+		.statusText {
+			white-space: pre;
+		}
+	</style>
+</head>
+
+<body ng-app="chatbotApp">
+	<div class="container" ng-controller="MainController">
+		<div class="page-header">
+			<h3>Sales Chat</h3>
+		</div>
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-2 chatBox">
+				<ul class="list-group">
+					<li class="list-group-item" ng-repeat="hist in history track by $index" ng-class="{'text-right listOdd': $odd, 'listEven': $even}">
+						<!--<span ng-if="$even"><span class="glyphicon glyphicon-chevron-right">
+						</span></span>-->
+						<span class="statusText">{{ hist }}</span>
+						<!--<span ng-if="$odd"><span class="glyphicon glyphicon-chevron-left">
+						</span></span>-->
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-2">
+				<form name="chatForm" novalidate ng-submit="chat()">
+					<div class="form-group">
+						<input class="form-control" ng-model="userInput" id="userInput" type="text" autocomplete="off">
+					</div>
+					<div class="form-group">
+						<button class="btn btn-info" ng-click="switchRecognition()">
+							<span class="glyphicon glyphicon-bullhorn"></span> {{ recognition ? "Stop" : "Speak" }}
+						</button>
+						<button class="btn btn-info" id="send" type="submit">
+							<span class="glyphicon glyphicon-chevron-right"></span> Send
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-8 col-sm-offset-2">
+				<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#rawResponse" aria-expanded="false" aria-controls="rawResponse">
+		  			Show Raw Response
+				</button>
+				<div class="collapse" id="rawResponse">
+					<div class="well" id="response">
+						{{ APIResponse | json }}
+					</div>
+				</div>	
+			</div>
+		</div>
+			
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "chatbot-webhook",
+  "version": "1.0.0",
+  "description": "A Webhook based Chat-Bot for API.AI",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "bower": "^1.8.0",
+    "express": "^4.14.1",
+    "method-override": "^2.3.7",
+    "morgan": "^1.8.1",
+    "serve-favicon": "^2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
