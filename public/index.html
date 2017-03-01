@@ -21,7 +21,11 @@
 
 		app.controller('MainController', function($scope, $http){
 			$scope.recognition;
-			$scope.accessToken = "a9ffbf2c72a04617b3c56b8c9b6ef0b9";
+
+			$http.get('/getAccessToken').success(function(accessToken){
+				$scope.accessToken = accessToken;
+			});
+
 			$scope.baseUrl = "https://api.api.ai/v1/";
 			$scope.startRecognition = function() {
 				$scope.recognition = new webkitSpeechRecognition();

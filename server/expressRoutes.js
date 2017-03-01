@@ -61,6 +61,11 @@ module.exports = function(restService) {
         
     }
     
+    restService.get('/getAccessToken', function(req, res){
+        var token = fs.readFileSync("./tokens/APIAI.AccessToken");  
+        res.send(token);
+    });
+    
     restService.post('/hook', function (req, res) {
         console.log('hook request');
         try {
